@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ruc {
+  ruc_id        Int  @id(map: "ruc_pk") @default(autoincrement())
+  ruc_nombre    String  @db.VarChar
+  ruc_ci        Int
+  ruc_dv        Int
+  ruc_estado    String? @db.VarChar
+  ruc_adicional String? @db.VarChar
+}
