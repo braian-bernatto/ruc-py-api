@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client'
 import express from 'express'
 
 const prisma = new PrismaClient()
@@ -12,26 +12,23 @@ app.get('/ruc', async (req, res) => {
 })
 
 app.get(`/ruc/apellido-nombre`, async (req, res) => {
-  const { listado }: { listado?: string } = req.params
+  const { listado }: { listado?: string } = req.query
+
+  const listadoArray = listado?.split(';')
+
+  const query = listadoArray?.map(item => ({
+    ruc_nombre: {
+      contains: item,
+      mode: Prisma.QueryMode.insensitive
+    }
+  }))
 
   const contribuyentes = await prisma.ruc.findMany({
     where: {
-      OR: [
-        {
-          ruc_nombre: {
-            contains: 'bernatto colman',
-            mode: 'insensitive'
-          }
-        },
-        {
-          ruc_nombre: {
-            contains: 'nora yamile',
-            mode: 'insensitive'
-          }
-        }
-      ]
+      OR: query
     }
   })
+
   res.json(contribuyentes)
 })
 
