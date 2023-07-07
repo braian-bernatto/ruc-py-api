@@ -40,16 +40,13 @@ app.get(`/ruc/ci`, async (req, res) => {
 
   const listadoArray = listado?.split(';')
 
+  const query = listadoArray?.map(item => ({
+    ruc_ci: +item
+  }))
+
   const contribuyentes = await prisma.ruc.findMany({
     where: {
-      OR: [
-        {
-          ruc_ci: 5353277
-        },
-        {
-          ruc_ci: 4536259
-        }
-      ]
+      OR: query
     }
   })
   res.json(contribuyentes)
