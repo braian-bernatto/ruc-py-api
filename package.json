@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.ts",
-    "start": "node app"
+    "tsc": "tsc",
+    "start": "node build/app.js"
   },
   "author": "bernatto",
   "license": "ISC",
