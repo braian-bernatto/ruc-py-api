@@ -92,6 +92,6 @@ app.get(`/ruc/full/:datos`, async (req, res) => {
   }
 })
 
-const server = app.listen(4000, () => {
-  console.log(`Api server runing in port 4000`)
+const server = app.listen(process.env.PORT, () => {
+  console.log(`Api server runing in port ${process.env.PORT}`)
 })

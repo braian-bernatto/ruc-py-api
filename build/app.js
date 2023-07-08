@@ -92,6 +92,6 @@ app.get(`/ruc/full/:datos`, (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).json({ msg: 'error en el servidor' });
     }
 }));
-const server = app.listen(4000, () => {
-    console.log(`Api server runing in port 4000`);
+const server = app.listen(process.env.PORT, () => {
+    console.log(`Api server runing in port ${process.env.PORT}`);
 });
