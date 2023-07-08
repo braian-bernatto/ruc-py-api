@@ -1,20 +1,41 @@
 import { PrismaClient, Prisma } from '@prisma/client'
 import express from 'express'
+const cors = require('cors')
+const morgan = require('morgan')
 
 const prisma = new PrismaClient()
 const app = express()
 
+app.use(morgan('dev'))
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
+app.use(cors())
 
-app.get('/ruc', async (req, res) => {
-  const contribuyentes = await prisma.ruc.findMany()
-  res.json(contribuyentes)
+app.get(`/ruc/:ruc`, async (req, res) => {
+  const { ruc }: { ruc?: string } = req.params
+
+  const listadoArray = ruc?.split(';')
+
+  const query = listadoArray?.map(item => ({
+    ruc_ci: +item
+  }))
+
+  try {
+    const contribuyentes = await prisma.ruc.findMany({
+      where: {
+        OR: query
+      }
+    })
+    res.json(contribuyentes)
+  } catch (error) {
+    res.status(500).json({ msg: 'error en el servidor' })
+  }
 })
 
-app.get(`/ruc/apellido-nombre`, async (req, res) => {
-  const { listado }: { listado?: string } = req.query
+app.get(`/ruc/razon-social/:datos`, async (req, res) => {
+  const { datos }: { datos?: string } = req.params
 
-  const listadoArray = listado?.split(';')
+  const listadoArray = datos?.split(';')
 
   const query = listadoArray?.map(item => ({
     ruc_nombre: {
@@ -23,39 +44,16 @@ app.get(`/ruc/apellido-nombre`, async (req, res) => {
     }
   }))
 
-  const contribuyentes = await prisma.ruc.findMany({
-    where: {
-      OR: query
-    }
-  })
-
-  res.json(contribuyentes)
-})
-
-app.get(`/ruc/ci`, async (req, res) => {
-  const { listado }: { listado?: string } = req.query
-
-  const listadoArray = listado?.split(';')
-
-  const query = listadoArray?.map(item => ({
-    ruc_ci: +item
-  }))
-
-  const contribuyentes = await prisma.ruc.findMany({
-    where: {
-      OR: query
-    }
-  })
-  res.json(contribuyentes)
-})
-
-app.get(`/ruc/:ci`, async (req, res) => {
-  const { ci }: { ci?: string } = req.params
-
-  const contribuyente = await prisma.ruc.findMany({
-    where: { ruc_ci: Number(ci) }
-  })
-  res.json(contribuyente)
+  try {
+    const contribuyentes = await prisma.ruc.findMany({
+      where: {
+        OR: query
+      }
+    })
+    res.json(contribuyentes)
+  } catch (error) {
+    res.status(500).json({ msg: 'error en el servidor' })
+  }
 })
 
 const server = app.listen(4000, () => {

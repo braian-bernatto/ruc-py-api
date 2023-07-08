@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -8,10 +9,20 @@ datasource db {
 }
 
 model ruc {
-  ruc_id        Int  @id(map: "ruc_pk") @default(autoincrement())
+  ruc_id        Int     @id(map: "ruc_pk") @default(autoincrement())
   ruc_nombre    String  @db.VarChar
   ruc_ci        Int
   ruc_dv        Int
   ruc_estado    String? @db.VarChar
   ruc_adicional String? @db.VarChar
+}
+
+view v_ruc {
+  ruc_id        Int     @unique
+  ruc_nombre    String? @db.VarChar
+  ruc_ci        Int?
+  ruc_dv        Int?
+  ruc_estado    String? @db.VarChar
+  ruc_adicional String? @db.VarChar
+  fulltext      String?
 }
