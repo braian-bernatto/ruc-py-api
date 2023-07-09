@@ -2,6 +2,7 @@ import { PrismaClient, Prisma } from '@prisma/client'
 import express from 'express'
 const cors = require('cors')
 const morgan = require('morgan')
+require('dotenv').config()
 
 const prisma = new PrismaClient()
 const app = express()
